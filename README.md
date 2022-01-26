@@ -1,3 +1,5 @@
+![BuildStatus](https://github.com/JoviaNierenberg/project3/actions/workflows/test.yml/badge.svg?event=push)
+
 # Project 3
 Minimum Spanning Trees
 

@@ -42,10 +42,11 @@ def test_mst_small():
     check_mst(g.adj_mat, g.mst, 8)
 
 
-def test_mst_single_cell_data():
+#def test_mst_single_cell_data():
     """ Unit test for the construction of a minimum spanning tree using 
     single cell data, taken from the Slingshot R package 
     (https://bioconductor.org/packages/release/bioc/html/slingshot.html)
+    """
     """
     file_path = './data/slingshot_example.txt'
     # load coordinates of single cells in low-dimensional subspace
@@ -57,6 +58,6 @@ def test_mst_single_cell_data():
     check_mst(g.adj_mat, g.mst, 57.263561605571695)
 
 
-def test_mst_student():
+def test_mst_student():"""
     """ TODO: Write at least one unit test for MST construction """
-    pass
+    #pass

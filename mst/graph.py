@@ -55,43 +55,39 @@ class Graph:
         self.outgoing_edges_zip = list(zip(self.outgoing_edges_with_zeros, self.curr_vertex_list, self.vertices))
         self.outgoing_edges = [i for i in self.outgoing_edges_zip if i[0]!=0] # keep non-zero edges
         print(self.outgoing_edges)
-        heapq.heapify(self.outgoing_edges)
-        
-        #self.outgoing_edges = [i for i in list(self.adj_mat[:,self.curr_vertex]) if i!=0]
-        #self.outgoing_edges_with_zeros = list(self.adj_mat[:,self.curr_vertex])
-        #self.curr_outgoing_edges = [i for i in self.outgoing_edges_with_zeros if i!=0]
-        #self.outgoing_edges = self.curr_outgoing_edges
-        
+        heapq.heapify(self.outgoing_edges)   
         
         # grow the tree by adding the minimum weight edge to a vertex not in the tree
         while(self.outgoing_edges):
+            print("starting while loop")
             # determine lowest weighted edge and corresponding neighbor node
             print(self.outgoing_edges)
             self.lowest_weight_edge = heapq.heappop(self.outgoing_edges) # removes lowest weight edge from queue
             print(self.lowest_weight_edge)
             
-            #self.curr_cols = self.adj_mat[:, self.visted_vertices]
-            #print(self.curr_cols)
-            #self.neighbor_with_lowest_edge = self.outgoing_edges_with_zeros.index(self.lowest_weight_edge)
-            #print(self.neighbor_with_lowest_edge)
-            
             # if destination vertex isn't in vistited_vertices
-            #if self.neighbor_with_lowest_edge not in self.visted_vertices:
-                #print("not in list")
+            if self.lowest_weight_edge[2] not in self.visted_vertices:
+                print("meow")
                 # Add this edge to our MST
-                #self.mst[self.curr_vertex, self.neighbor_with_lowest_edge] = self.lowest_weight_edge 
-                #self.mst[self.neighbor_with_lowest_edge, self.curr_vertex] = self.lowest_weight_edge 
+                self.mst[self.lowest_weight_edge[1], self.lowest_weight_edge[2]] = self.lowest_weight_edge[0]
+                self.mst[self.lowest_weight_edge[2], self.lowest_weight_edge[1]] = self.lowest_weight_edge[0]
                 # Add the destination to visited_vertices
-                #heapq.heappush(self.visted_vertices, self.neighbor_with_lowest_edge) 
+                heapq.heappush(self.visted_vertices, self.lowest_weight_edge[2])
+                print(list(self.visted_vertices))
                 # Add all outgoing edges from visited_vertices to our priority queue
-                #self.outgoing_edges_with_zeros = list(self.adj_mat[:,self.neighbor_with_lowest_edge])
-                #self.curr_outgoing_edges = [i for i in self.outgoing_edges_with_zeros if i!=0]
-                #print(self.curr_outgoing_edges)
+                self.curr_vertex = self.lowest_weight_edge[2]
+                print(self.curr_vertex)
+                self.outgoing_edges_with_zeros = list(self.adj_mat[:,self.curr_vertex])
+                print("woof")
+                print(self.outgoing_edges_with_zeros)
+                self.outgoing_edges_with_zeros.pop(self.lowest_weight_edge[1]) # remove edge that led to this node from the other side
+                self.curr_vertex_list = [self.curr_vertex] * len(self.outgoing_edges_with_zeros)
+                self.outgoing_edges_zip = list(zip(self.outgoing_edges_with_zeros, self.curr_vertex_list, self.vertices))
+                self.outgoing_edges_add = [i for i in self.outgoing_edges_zip if i[0]!=0] # keep non-zero edges
+                print("grrr")
+                print(self.outgoing_edges_add)
+                for edge in self.outgoing_edges_add:
+                    heapq.heappush(self.outgoing_edges, edge)
+                print(self.outgoing_edges)
                 
-                
-                #print(self.visted_vertices)
-                #print(self.mst)
-
-            heapq.heappop(self.outgoing_edges) ############# right now doing this so that the loop isn't infinite
-            print(self.outgoing_edges) ###############
-        # repeat
+                print(self.mst)

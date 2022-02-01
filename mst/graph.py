@@ -68,10 +68,8 @@ class Graph:
                 outgoing_edges_with_zeros = list(self.adj_mat[:,curr_vertex])
                 outgoing_edges_with_zeros.pop(lowest_weight_edge[1]) # remove edge that led to this node from the other side ##### this one makes them not line up anymore 
                 curr_vertex_list = [curr_vertex] * len(outgoing_edges_with_zeros)
-                A = [x for x in vertices if x!=lowest_weight_edge[1]]
-                #A = list(range(num_nodes))
-                #A.pop(lowest_weight_edge[1])
-                outgoing_edges_zip = list(zip(outgoing_edges_with_zeros, curr_vertex_list, A)) ###### don't correspond to the correct edges
+                vertices_wo_recent = [x for x in vertices if x!=lowest_weight_edge[1]]
+                outgoing_edges_zip = list(zip(outgoing_edges_with_zeros, curr_vertex_list, vertices_wo_recent))
                 outgoing_edges_add = [i for i in outgoing_edges_zip if i[0]!=0] # keep non-zero edges
                 for edge in outgoing_edges_add:
                     heapq.heappush(outgoing_edges, edge)

@@ -35,45 +35,43 @@ class Graph:
         We highly encourage the use of priority queues in your implementation. See the heapq
         module, particularly the `heapify`, `heappop`, and `heappush` functions.
         """
-        print(self.adj_mat) ################
         
         # determine number of nodes, initialize mst as numpy array of zeros connecting all nodes
-        self.num_nodes = np.shape(self.adj_mat)[1]
-        self.mst = np.zeros((self.num_nodes, self.num_nodes))
+        num_nodes = np.shape(self.adj_mat)[1]
+        self.mst = np.zeros(self.adj_mat.shape)
         
         # initialize a tree with a vertex closen arbitrarily from the graph
-        self.vertices = [*range(self.num_nodes)] # create list with range of vertex numbers 
-        self.curr_vertex = self.vertices.pop(0)
-        self.visted_vertices = [self.curr_vertex]
-        heapq.heapify(self.visted_vertices)
+        vertices = list(range(num_nodes)) # create list with range of vertex numbers 
+        curr_vertex = vertices[0] 
+        visited_vertices = {curr_vertex}
         
         # store outgoing edges from visited_vertices as tuples in a priority queue, remove zeros
-        self.outgoing_edges_with_zeros = list(self.adj_mat[:,self.curr_vertex])
-        self.outgoing_edges_with_zeros.pop(0)
-        self.curr_vertex_list = [self.curr_vertex] * len(self.outgoing_edges_with_zeros)
-        self.outgoing_edges_zip = list(zip(self.outgoing_edges_with_zeros, self.curr_vertex_list, self.vertices))
-        self.outgoing_edges = [i for i in self.outgoing_edges_zip if i[0]!=0] # keep non-zero edges
-        heapq.heapify(self.outgoing_edges)   
+        outgoing_edges_with_zeros = list(self.adj_mat[1:num_nodes,curr_vertex])
+        curr_vertex_list = [curr_vertex] * len(outgoing_edges_with_zeros)
+        outgoing_edges_zip = list(zip(outgoing_edges_with_zeros, curr_vertex_list, vertices[1:]))
+        outgoing_edges = [i for i in outgoing_edges_zip if i[0]!=0] # keep non-zero edges
+        heapq.heapify(outgoing_edges)   
         
         # grow the tree by adding the minimum weight edge to a vertex not in the tree
-        while(self.outgoing_edges):
+        while(outgoing_edges):
             # determine lowest weighted edge and corresponding neighbor node
-            self.lowest_weight_edge = heapq.heappop(self.outgoing_edges) # removes lowest weight edge from queue
+            lowest_weight_edge = heapq.heappop(outgoing_edges) # removes lowest weight edge from queue
             
             # if destination vertex isn't in vistited_vertices
-            if self.lowest_weight_edge[2] not in self.visted_vertices:
-                # Add this edge to our MST
-                self.mst[self.lowest_weight_edge[1], self.lowest_weight_edge[2]] = self.lowest_weight_edge[0]
-                self.mst[self.lowest_weight_edge[2], self.lowest_weight_edge[1]] = self.lowest_weight_edge[0]
-                # Add the destination to visited_vertices
-                heapq.heappush(self.visted_vertices, self.lowest_weight_edge[2])
+            if lowest_weight_edge[2] not in visited_vertices:
+                # Add this edge to our MST and add vertex to visited
+                self.mst[lowest_weight_edge[1], lowest_weight_edge[2]] = lowest_weight_edge[0]
+                self.mst[lowest_weight_edge[2], lowest_weight_edge[1]] = lowest_weight_edge[0]
+                visited_vertices.add(lowest_weight_edge[2]) # Add the destination to visited_vertices
                 # Add all outgoing edges from visited_vertices to our priority queue
-                self.curr_vertex = self.lowest_weight_edge[2]
-                self.outgoing_edges_with_zeros = list(self.adj_mat[:,self.curr_vertex])
-                self.outgoing_edges_with_zeros.pop(self.lowest_weight_edge[1]) # remove edge that led to this node from the other side
-                self.curr_vertex_list = [self.curr_vertex] * len(self.outgoing_edges_with_zeros)
-                self.outgoing_edges_zip = list(zip(self.outgoing_edges_with_zeros, self.curr_vertex_list, self.vertices))
-                self.outgoing_edges_add = [i for i in self.outgoing_edges_zip if i[0]!=0] # keep non-zero edges
-                for edge in self.outgoing_edges_add:
-                    heapq.heappush(self.outgoing_edges, edge)
-                print(self.mst)
+                curr_vertex = lowest_weight_edge[2]
+                outgoing_edges_with_zeros = list(self.adj_mat[:,curr_vertex])
+                outgoing_edges_with_zeros.pop(lowest_weight_edge[1]) # remove edge that led to this node from the other side ##### this one makes them not line up anymore 
+                curr_vertex_list = [curr_vertex] * len(outgoing_edges_with_zeros)
+                A = [x for x in vertices if x!=lowest_weight_edge[1]]
+                #A = list(range(num_nodes))
+                #A.pop(lowest_weight_edge[1])
+                outgoing_edges_zip = list(zip(outgoing_edges_with_zeros, curr_vertex_list, A)) ###### don't correspond to the correct edges
+                outgoing_edges_add = [i for i in outgoing_edges_zip if i[0]!=0] # keep non-zero edges
+                for edge in outgoing_edges_add:
+                    heapq.heappush(outgoing_edges, edge)

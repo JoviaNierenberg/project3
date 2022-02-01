@@ -36,7 +36,19 @@ def check_mst(adj_mat: np.ndarray,
     # mst should have v-1 edges, where v=vertices
     expected_edges = np.shape(adj_mat)[1] - 1
     counted_edtes = np.count_nonzero(mst) / 2
-    assert expected_edges==counted_edtes
+    assert expected_edges==counted_edtes, 'Proposed MST has incorrect expected number of edges'
+
+    # mst should be connected - no row should have a sum of 0
+    row_sums = mst.sum(axis=1)
+    assert np.all(row_sums), 'Proposed MST is not connected, as one or more row sums is zero'
+
+    # mst is undirected
+    assert mst[1,2]==mst[2,1], 'Proposed MST is not undirected'
+
+    # mst contains only positive numbers or zeros
+    bool_arr = mst >= 0
+    assert np.all(bool_arr), 'Proposed MST contains non-positive, non-zero elements'
+
 
 
 def test_mst_small():
@@ -63,5 +75,11 @@ def test_mst_single_cell_data():
 
 
 def test_mst_student():
-    """ TODO: Write at least one unit test for MST construction """
-    pass
+    """ TODO: Write at least one unit test for MST construction
+    Unit test for the construction of a minimum spanning tree using
+    a uniform matrix of ones
+    """
+    ones_mat = np.ones((5,5))
+    g = Graph(ones_mat)
+    g.construct_mst()
+    check_mst(g.adj_mat, g.mst, 4)

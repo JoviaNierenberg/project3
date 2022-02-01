@@ -33,6 +33,11 @@ def check_mst(adj_mat: np.ndarray,
             total += mst[i, j]
     assert approx_equal(total, expected_weight), 'Proposed MST has incorrect expected weight'
 
+    # mst should have v-1 edges, where v=vertices
+    expected_edges = np.shape(adj_mat)[1] - 1
+    counted_edtes = np.count_nonzero(mst) / 2
+    assert expected_edges==counted_edtes
+
 
 def test_mst_small():
     """ Unit test for the construction of a minimum spanning tree on a small graph """
